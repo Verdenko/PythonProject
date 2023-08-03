@@ -1,0 +1,44 @@
+{% extends 'main/layout.html' %}
+{% block content %}
+    <h1 align="center">Расчет величины удельного расхода теплоты на сушку древесины</h1>
+   <form method="POST" action="/calculate"><div class='container'>
+       {% csrf_token %}
+       <p>Порода древесины</p>
+       <select name="wood_id">
+       {% for wood in wood_name %}
+        <option value ={{wood.id}}>{{wood.name}}</option>
+       {% endfor %}
+    </select></div>
+    <div class="container">
+      <p style="container">Начальная влажность древесины (на сухую массу)
+      </p>
+        <input type="number" name="humidity1" min="0" max="100" step="0.1" value="0">
+       <p style="container">%</p>
+    </div>
+       <div class="container">
+      <p style="container">Конечная влажность древесины (на сухую массу)</p>
+        <input type="number" name="humidity2" min="0" max="100" step="0.1" value="0">
+       <p style="container">%</p>
+    </div>
+<div class='container'>
+       <p>Тип сушильных установок</p>
+    <select name="temp">
+        <option value="2">Высокотемпературные</option>
+        <option value="1">Низкотемпературные</option>
+    </select></div>
+       <div class="container">
+           <input type="submit" name="submit">
+           <input type="reset" name="сбросить"></div>
+   </form>
+{% if result %}
+    <div class="container">
+             <p>Удельный расход теплоты = {{ result }} Гкал/м^3</p>
+    </div>
+{% endif %}
+{% if error %}
+    <div class="container">
+             <p style="color:#FF0000">Ошибка: {{ error }} </p>
+    </div>
+{% endif %}
+{% endblock %}
+{% block title %}Расчёт{% endblock %}

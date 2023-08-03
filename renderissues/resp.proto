@@ -1,0 +1,31 @@
+syntax="proto3";
+
+    /* Запрос */
+message CalculationRequest {
+    /* ID породы дерева */
+    int32 wood_id = 1;
+    /* Начальная влажность древесины */
+    float humidity_start = 2;
+    /* Конечная влажность древесины */
+    float humidity_end = 3;
+    /* Тип сушильной установки  */
+    int32 dryer_type = 4;
+    /* Метод передачи */
+    string method = 5;
+
+}
+    /* Ответ */
+message CalculationResponse {
+    /* Удельный расход теплоты на сушку древесины */
+    float heat_value = 1;
+    /* Ошибка при обработке */
+    string error_message = 2;
+
+        }
+
+    /* Метод, связывающий запрос и ответ */
+service CalculationService {
+
+        rpc CalculateHeatConsumption (CalculationRequest) returns (CalculationResponse) {}
+
+}
