@@ -1,0 +1,2 @@
+def qwert():
+    return 'hi'
