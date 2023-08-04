@@ -1,6 +1,7 @@
 def qwert():
-    return 0
+    return 'hi'
 
 
 def asdf():
     return 0
+
