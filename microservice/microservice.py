@@ -4,9 +4,6 @@ import resp_pb2
 import resp_pb2_grpc
 from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
-from django.conf import settings
-import os
-import django
 from math import ceil, isfinite
 from ProjectDataBase import IrenderWoodcatalog as woodcat, IrenderWoodparameter as wood, IrenderDryertype as dryer
 import sys
@@ -14,11 +11,9 @@ from os.path import dirname, abspath
 from datetime import datetime
 d = dirname(dirname(abspath(__file__)))
 sys.path.append(d)
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'renderissues.settings')
-django.setup()
 
 # функция определяющая текущий сезон
-def check_date_range():
+def is_summer()->bool:
     # Получаем текущую дату
     current_date = datetime.now().date()
     # Получаем даты начала и конца диапазона
@@ -26,13 +21,12 @@ def check_date_range():
     end = datetime.strptime("15.10." + str(datetime.now().year), "%d.%m.%Y").date()
     # Проверяем, попадает ли текущая дата в диапазон
     if start <= current_date <= end:
-        return 1
+        return True
     else:
-        return 2
+        return False
 
 
-db_config = settings.DATABASES['default']
-DATABASE_URL = f"postgresql://{db_config['USER']}:{db_config['PASSWORD']}@{db_config['HOST']}:{db_config['PORT']}/{db_config['NAME']}"
+DATABASE_URL = f"postgresql://postgres:alpine@localhost:5432/ProjectDataBase"
 
 # Создаем экземпляр движка SQLAlchemy
 engine = create_engine(DATABASE_URL, echo=True)
@@ -101,7 +95,7 @@ class CalculationServiceServicer(resp_pb2_grpc.CalculationServiceServicer):
         wood_type = record.wood_type_id
 
         # определение отопительного сезона
-        time_period = check_date_range()
+        time_period = 1 if is_summer() else 2
 
         # Запрос на получение удельного расхода теплоты на испарение 1 кг влаги
         record2 = session.query(wood).filter(
